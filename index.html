@@ -1,3 +1,69 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="2026년 하반기 성경 통독 일정과 오늘 읽을 말씀"><title>매일 말씀 · 성경 통독</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231b4238'/%3E%3Cpath d='M8 8h7v17H8zm9 0h7v17h-7' fill='%23e8d8a7'/%3E%3C/svg%3E"><link rel="stylesheet" href="style.css"><script src="schedule.js" defer></script><script src="app.js" defer></script></head>
-<body><main><div class="layout"><aside><section class="today-card"><div class="card-top"><span id="card-label">오늘의 말씀</span><span class="small-book" aria-hidden="true">▤</span></div><p id="selected-date"></p><h2 id="reading"></h2><p id="day-description"></p><p id="schedule-note" class="note" hidden></p><button id="copy-reading" class="complete-button">오늘 말씀 복사</button><p id="copy-status" class="save-note" role="status" aria-live="polite"></p></section><div class="legend"><span><i class="today-dot"></i>오늘</span><span><i class="rest-dot"></i>지정 읽기 없음</span></div></aside><section class="calendar-panel" aria-label="월별 통독 스케줄"><div class="calendar-toolbar"><div class="month-navigation"><button id="prev" aria-label="이전 달">‹</button><h2 id="month-title"></h2><button id="next" aria-label="다음 달">›</button></div><button id="go-today" class="outline-button">오늘로 이동</button></div><div class="month-tabs" aria-label="월 선택"></div><div class="weekdays" aria-hidden="true"><span>주일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div id="calendar" class="calendar"></div><p class="calendar-hint">날짜를 선택하면 그날 읽을 말씀을 확인할 수 있습니다.</p></section></div><footer><span>매일 말씀 <b>·</b> 2026</span><span>첨부된 손글씨 통독표 기준 · 주일은 쉬어가는 날</span></footer></main><div id="announcement" class="sr-only" aria-live="polite"></div></body></html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="2026년 하반기 성경 통독 일정과 오늘 읽을 말씀"
+    />
+    <title>매일 말씀 · 성경 통독</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231b4238'/%3E%3Cpath d='M8 8h7v17H8zm9 0h7v17h-7' fill='%23e8d8a7'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="schedule.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <div class="layout">
+        <aside>
+          <section class="today-card">
+            <div class="card-top">
+              <span id="card-label">오늘의 말씀</span
+              ><span class="small-book" aria-hidden="true">▤</span>
+            </div>
+            <p id="selected-date"></p>
+            <h2 id="reading"></h2>
+            <p id="schedule-note" class="note" hidden></p>
+            <button id="copy-reading" class="complete-button">
+              오늘 말씀 복사
+            </button>
+            <p
+              id="copy-status"
+              class="save-note"
+              role="status"
+              aria-live="polite"
+            ></p>
+          </section>
+          <div class="legend">
+            <span><i class="today-dot"></i>오늘</span
+            ><span><i class="rest-dot"></i>지정 읽기 없음</span>
+          </div>
+        </aside>
+        <section class="calendar-panel" aria-label="월별 통독 스케줄">
+          <div class="calendar-toolbar">
+            <div class="month-navigation">
+              <button id="prev" aria-label="이전 달">‹</button>
+              <h2 id="month-title"></h2>
+              <button id="next" aria-label="다음 달">›</button>
+            </div>
+            <button id="go-today" class="outline-button">오늘로 이동</button>
+          </div>
+          <div class="month-tabs" aria-label="월 선택"></div>
+          <div class="weekdays" aria-hidden="true">
+            <span>주일</span><span>월</span><span>화</span><span>수</span
+            ><span>목</span><span>금</span><span>토</span>
+          </div>
+          <div id="calendar" class="calendar"></div>
+          <p class="calendar-hint">
+            날짜를 선택하면 그날 읽을 말씀을 확인할 수 있습니다.
+          </p>
+        </section>
+      </div>
+    </main>
+    <div id="announcement" class="sr-only" aria-live="polite"></div>
+  </body>
+</html>
