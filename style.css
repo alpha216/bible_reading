@@ -533,3 +533,13 @@ footer b {
     margin-top: 28px;
   }
 }
+
+.read-button {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  background: transparent;
+  color: #e7d7af;
+}
+.read-button:hover:not(:disabled) {
+  background: #355c4f;
+}
