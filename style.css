@@ -543,10 +543,3 @@ footer b {
 .read-button:hover:not(:disabled) {
   background: #355c4f;
 }
-
-.year-control {display:flex;align-items:center;gap:12px;margin-top:22px;font-size:14px;color:var(--muted)}
-.year-control input {width:94px;padding:8px;border:1px solid var(--line);border-radius:6px;font:inherit;color:var(--ink);background:white}
-.year-control input:focus-visible {outline:3px solid var(--gold);outline-offset:2px}
-.month-tabs {flex-wrap:wrap}
-@media(max-width:900px){.month-tabs button{flex:0 0 calc((100% - 25px)/6)}}
-@media(max-width:400px){.year-control {flex-wrap:wrap}.year-control span{font-size:12px}.month-navigation{gap:3px}.month-navigation h2{font-size:18px}}
