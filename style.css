@@ -543,3 +543,12 @@ footer b {
 .read-button:hover:not(:disabled) {
   background: #355c4f;
 }
+
+.month-tabs.year-tabs { margin: 20px 0 0; }
+.year-tabs + .month-tabs { margin-top: 10px; }
+.month-tabs.year-tabs button { flex: 0 0 auto; padding: 8px 17px; }
+.month-tabs:not(.year-tabs) button { white-space: nowrap; }
+@media (max-width: 520px) {
+  .month-tabs:not(.year-tabs) { gap: 3px; }
+  .month-tabs:not(.year-tabs) button { font-size: 12px; padding: 8px 0; }
+}

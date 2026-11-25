@@ -1,6 +1,8 @@
 const $ = (selector) => document.querySelector(selector);
 function localDate(d = new Date()) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
-let today = localDate(), selected = today, month = Math.min(12, Math.max(1, new Date().getMonth() + 1));
+const YEARS = [2026, 2027];
+function homeView() { const now = new Date(), ok = YEARS.includes(now.getFullYear()); return ok ? { year: now.getFullYear(), month: now.getMonth() + 1 } : { year: now.getFullYear() < YEARS[0] ? YEARS[0] : YEARS.at(-1), month: now.getFullYear() < YEARS[0] ? 1 : 12 }; }
+let today = localDate(), selected = today, { year, month } = homeView();
 const bookAbbreviations = {
     '창세기': '창', '출애굽기': '출', '레위기': '레', '민수기': '민', '신명기': '신', '여호수아': '수', '사사기': '삿', '룻기': '룻', '사무엘상': '삼상', '사무엘하': '삼하', '열왕기상': '왕상', '열왕기하': '왕하', '역대상': '대상', '역대하': '대하', '에스라': '스', '느헤미야': '느', '에스더': '에', '욥기': '욥', '시편': '시',
     '잠언': '잠', '전도서': '전', '아가': '아', '이사야': '사', '예레미야': '렘', '예레미야애가': '애', '에스겔': '겔', '다니엘': '단', '호세아': '호', '요엘': '욜', '아모스': '암', '오바댜': '옵', '요나': '욘', '미가': '미', '나훔': '나', '하박국': '합', '스바냐': '습', '학개': '학', '스가랴': '슥', '말라기': '말',
@@ -24,17 +26,19 @@ async function writeClipboard(text) {
 }
 function selectDate(date) { selected = date; render(); }
 function render() {
-    $('#month-title').textContent = `2026년 ${month}월`;
-    $('#prev').disabled = month === 1; $('#next').disabled = month === 12;
-    const tabs = $('.month-tabs'); tabs.replaceChildren();
+    $('#month-title').textContent = `${year}년 ${month}월`;
+    $('#prev').disabled = year === YEARS[0] && month === 1; $('#next').disabled = year === YEARS.at(-1) && month === 12;
+    const yearTabs = $('#year-tabs'); yearTabs.replaceChildren();
+    for (const y of YEARS) { const button = document.createElement('button'); button.textContent = `${y}년`; button.className = y === year ? 'active' : ''; button.setAttribute('aria-pressed', String(y === year)); button.onclick = () => { year = y; render() }; yearTabs.append(button); }
+    const tabs = $('.month-tabs:not(.year-tabs)'); tabs.replaceChildren();
     for (let m = 1; m <= 12; m++) { const button = document.createElement('button'); button.textContent = `${m}월`; button.className = m === month ? 'active' : ''; button.setAttribute('aria-pressed', String(m === month)); button.onclick = () => { month = m; render() }; tabs.append(button); }
     const grid = $('#calendar'); grid.replaceChildren();
-    const first = new Date(2026, month - 1, 1).getDay(), last = new Date(2026, month, 0).getDate();
+    const first = new Date(year, month - 1, 1).getDay(), last = new Date(year, month, 0).getDate();
     const count = Math.ceil((first + last) / 7) * 7;
     for (let i = 0; i < count; i++) {
         const day = i - first + 1;
         if (day < 1 || day > last) { const blank = document.createElement('div'); blank.className = 'empty'; blank.setAttribute('aria-hidden', 'true'); grid.append(blank); continue; }
-        const date = `2026-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`, reading = schedule[date];
+        const date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`, reading = schedule[date];
         const button = document.createElement('button'); button.className = ['day', !reading ? 'rest' : '', i % 7 === 0 ? 'sunday' : '', date === today ? 'today' : '', date === selected ? 'selected' : ''].join(' ');
         button.setAttribute('aria-label', `${month}월 ${day}일, ${reading || '지정 읽기 없음'}`); button.setAttribute('aria-pressed', String(date === selected)); if (date === today) button.setAttribute('aria-current', 'date');
         const number = document.createElement('span'); number.className = 'date-number'; number.textContent = day; button.append(number);
@@ -61,12 +65,13 @@ $('#copy-reading').onclick = async () => {
     catch { if (selected === date) $('#copy-status').textContent = '복사하지 못했습니다. 브라우저의 클립보드 권한을 확인해 주세요.'; }
     finally { button.disabled = !schedule[selected]; }
 };
-$('#prev').onclick = () => { if (month > 1) { month--; render(); } }; $('#next').onclick = () => { if (month < 12) { month++; render(); } };
-$('#go-today').onclick = () => { today = localDate(); selected = today; month = Math.min(12, Math.max(1, new Date().getMonth() + 1)); render(); };
+function stepMonth(delta) { let m = month + delta, y = year; if (m < 1) { m = 12; y--; } else if (m > 12) { m = 1; y++; } if (y < YEARS[0] || y > YEARS.at(-1)) return; year = y; month = m; render(); }
+$('#prev').onclick = () => stepMonth(-1); $('#next').onclick = () => stepMonth(1);
+$('#go-today').onclick = () => { today = localDate(); selected = today; ({ year, month } = homeView()); render(); };
 window.addEventListener('focus', () => { const current = localDate(); if (current !== today) { if (selected === today) selected = current; today = current; render(); } });
 render();
 if (document.modelContext?.registerTool) {
     const controller = new AbortController();
-    try { Promise.resolve(document.modelContext.registerTool({ name: 'select_bible_reading_date', description: 'Select a date in the 2026 January–December Bible reading calendar and show its reading.', inputSchema: { type: 'object', properties: { date: { type: 'string', pattern: '^2026-(0[1-9]|1[0-2])-\\d{2}$' } }, required: ['date'], additionalProperties: false }, annotations: { readOnlyHint: false }, execute(input) { const date = input?.date; const parsed = new Date(`${date}T12:00:00`); if (typeof date !== 'string' || !/^2026-(0[1-9]|1[0-2])-\d{2}$/.test(date) || Number.isNaN(parsed.getTime()) || localDate(parsed) !== date) throw new Error('Valid January–December 2026 date required'); month = parsed.getMonth() + 1; selectDate(date); return { date, reading: schedule[date] || null }; } }, { signal: controller.signal })).catch(() => { }); } catch { }
+    try { Promise.resolve(document.modelContext.registerTool({ name: 'select_bible_reading_date', description: 'Select a date in the 2026–2027 Bible reading calendar and show its reading.', inputSchema: { type: 'object', properties: { date: { type: 'string', pattern: '^(2026|2027)-(0[1-9]|1[0-2])-\\d{2}$' } }, required: ['date'], additionalProperties: false }, annotations: { readOnlyHint: false }, execute(input) { const date = input?.date; const parsed = new Date(`${date}T12:00:00`); if (typeof date !== 'string' || !/^(2026|2027)-(0[1-9]|1[0-2])-\d{2}$/.test(date) || Number.isNaN(parsed.getTime()) || localDate(parsed) !== date) throw new Error('Valid 2026-2027 date required'); year = parsed.getFullYear(); month = parsed.getMonth() + 1; selectDate(date); return { date, reading: schedule[date] || null }; } }, { signal: controller.signal })).catch(() => { }); } catch { }
     window.addEventListener('pagehide', () => controller.abort(), { once: true });
 }

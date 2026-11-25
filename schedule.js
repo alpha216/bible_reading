@@ -1,4 +1,4 @@
-// 2026년 통독표. 1~6월(창세기→시편)은 7~12월과 같은 규칙(하루 4장, 주일 쉼)으로 만든 일정이고, 7~12월은 사진을 옮긴 것입니다.
+// 2026~2027년 통독표. 1~6월(창세기→시편)은 7~12월과 같은 규칙(하루 4장, 주일 쉼)으로 만든 일정이고, 7~12월은 사진을 옮긴 것입니다.
 const schedule = {};
 function entries(month, start, readings) { readings.forEach((reading,i)=> { schedule[`2026-${String(month).padStart(2,'0')}-${String(start+i).padStart(2,'0')}`]=reading; }); }
 entries(1,1,['창세기 1–4장','창세기 5–8장','창세기 9–12장']);
@@ -59,3 +59,13 @@ entries(11,30,['히브리서 5–8장']);
 entries(12,1,['히브리서 9–13장','야고보서 1–5장','베드로전서 1–5장','베드로후서 1–3장','요한일서 1–5장']);
 entries(12,7,['요한이서 · 요한삼서 · 유다서','요한계시록 1–4장','요한계시록 5–8장','요한계시록 9–12장','요한계시록 13–16장','요한계시록 17–20장']);
 entries(12,14,['요한계시록 18–22장']);
+// 2027년: 2026년과 같은 순서의 읽기를 2027-01-01부터 월~토에 차례로 배정합니다(주일 쉼).
+(function () {
+  const sequence = Object.keys(schedule).filter(d => d.startsWith('2026-')).sort().map(d => schedule[d]);
+  const day = new Date(2027, 0, 1, 12);
+  sequence.forEach(reading => {
+    if (day.getDay() === 0) day.setDate(day.getDate() + 1);
+    schedule[`${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, '0')}-${String(day.getDate()).padStart(2, '0')}`] = reading;
+    day.setDate(day.getDate() + 1);
+  });
+})();
